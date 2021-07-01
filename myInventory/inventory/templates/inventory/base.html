@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{% static 'inventory/style.css' %}">
+    <link rel="stylesheet" href="{% static 'inventory/navbar_style.css' %}">
+    <meta charset="UTF-8">
+    <title>Products</title>
+</head>
+<body>
+    <ul class="topnav">
+      <li><a href="{% url 'inventory:products'%}">All Products</a></li>
+    </ul>
+
+    {% block body %}
+    {% endblock %}
+</body>
+</html>

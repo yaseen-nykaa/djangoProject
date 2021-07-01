@@ -1,0 +1,11 @@
+{% extends 'inventory/base.html'%}
+{% block body %}
+<h1>Add Product</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{form}}
+    <button type="submit">Save</button>
+</form>
+
+{% endblock %}

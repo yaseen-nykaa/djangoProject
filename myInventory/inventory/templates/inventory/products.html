@@ -1,0 +1,25 @@
+{% extends 'inventory/base.html' %}
+{% block body %}
+<center>
+    <table style="margin: 30px; font-size: 20px; width:60%; text-align:center">
+        <tr>
+            <th>sku_id</th>
+            <th>name</th>
+            <th>mrp</th>
+            <th>qty</th>
+            <th>exp_date</th>
+            <th>UPDATE</th>
+        </tr>
+            {% for prod in product_list %}
+                <tr>
+                    <td>{{prod.sku_id}}</td>
+                    <td>{{prod.name}}</td>
+                    <td>{{prod.mrp}}</td>
+                    <td>{{prod.qty}}</td>
+                    <td>{{prod.exp_date}}</td>
+                    <td><a href="{% url 'inventory:update_view' prod.sku_id %}">Update</a></td>
+                </tr>
+            {% endfor %}
+    </table>
+</center>
+{% endblock %}
