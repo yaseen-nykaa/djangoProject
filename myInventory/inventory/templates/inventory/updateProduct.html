@@ -2,16 +2,16 @@
 {% block body %}
 <h1>Update product</h1>
 
-<form method="post" action="{% url 'inventory:update' sku_id %}">
-    <input type="hidden" name="sku_id" value={{sku_id}}>
+<form method="post" action="{% url 'inventory:update' prod.sku_id %}">
+    <input type="hidden" name="sku_id" value={{prod.sku_id}}>
     <label>Name:</label>
-    <input type="text" name="name" value=""><br><br>
+    <input type="text" name="name" value={{prod.name}}><br><br>
     <label>MRP:</label>
-    <input type="number" step="0.01" name="mrp" value=-1><br><br>
+    <input type="number" step="0.01" name="mrp" value={{prod.mrp}}><br><br>
     <label>Quantity:</label>
-    <input type="number" name="qty" value=-1><br><br>
+    <input type="number" name="qty" value={{prod.qty}}><br><br>
     <label>Expiry Date:</label>
-    <input type="date" name="exp_date" value=""><br><br>
+    <input type="date" name="exp_date" value={{prod.exp_date|date:"Y-m-d"}} ><br><br>
     <input type="submit" value="Submit">
 </form>
 

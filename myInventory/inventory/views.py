@@ -50,9 +50,9 @@ def get_products(request):
 
 @api_view(['GET'])
 def prod_detail_view(request):
-    id = request.GET['id']
+    sku_id = request.GET['skuId']
     prod = []
-    prod.append(product.objects.get(pk=id))
+    prod.append(product.objects.get(sku_id=sku_id))
     print(type(prod))
     product_serializer = productSerializer(prod, many=True)
     return JsonResponse(product_serializer.data, safe=False)
@@ -74,22 +74,62 @@ def prod_add_view(request):
         else:
             return JsonResponse({"ERROR": "Product data invalid or incomplete"}, status=status.HTTP_400_BAD_REQUEST)
 
+# TODO: prepopulate the form fields
 @api_view(['PUT','POST'])
 def prod_update(request, sku_id):
     if request.method == 'PUT':
         try:
             prod = product.objects.get(sku_id=sku_id)
             prod_data = JSONParser().parse(request)
-            if(isValid(prod_data)):
-                prod_serializer = productSerializer(prod, data=prod_data)
-                if prod_serializer.is_valid():
-                    prod_serializer.save()
-                    return JsonResponse(prod_serializer.data)
-            return JsonResponse(prod_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                name = prod_data['name']
+                if(name != ""):
+                    prod.name = name
+                else:
+                    return JsonResponse({"Error":"name sent is an empty string"}, status=status.HTTP_400_BAD_REQUEST)
+            except:
+                pass
+
+            try:
+                mrp = prod_data['mrp']
+                if(float(mrp) >= 0.00):
+                    prod.mrp = float(mrp)
+                else:
+                    return JsonResponse({"Error": "incorrect mrp value"}, status=status.HTTP_400_BAD_REQUEST)
+            except:
+                pass
+
+            try:
+                qty = prod_data['qty']
+                if(int(qty) >= 0):
+                    prod.qty = int(qty)
+                else:
+                    return JsonResponse({"Error": "incorrect qty value"}, status=status.HTTP_400_BAD_REQUEST)
+            except:
+                pass
+
+            try:
+                exp_date = prod_data['exp_date']
+                prod.exp_date = exp_date
+            except:
+                pass
+
+            print(prod.__dict__)
+            prod.save()
+            return JsonResponse({"message":"product with sku_id " + str(sku_id) + " was updated"}, status=status.HTTP_200_OK)
+
+            # if(isValid(prod_data)):
+            #     prod_serializer = productSerializer(prod, data=prod_data)
+            #     if prod_serializer.is_valid():
+            #         prod_serializer.save()
+            #         return JsonResponse(prod_serializer.data)
+            # return JsonResponse(prod_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except:
             return JsonResponse({'ERROR': "product with sku_id " + str(sku_id) + " not found"},
                                 status=status.HTTP_400_BAD_REQUEST)
 
+    #
     elif request.method == 'POST':
         sku_id = request.POST['sku_id']
         try:
@@ -114,7 +154,8 @@ def prod_update(request, sku_id):
                                 status=status.HTTP_400_BAD_REQUEST)
 
 def prod_update_view(request, sku_id):
-    return render(request, 'inventory/updateProduct.html', {'sku_id':sku_id})
+    prod = product.objects.get(sku_id=sku_id)
+    return render(request, 'inventory/updateProduct.html', {'prod':prod})
 
 @api_view(['DELETE'])
 def prod_delete(request, sku_id):

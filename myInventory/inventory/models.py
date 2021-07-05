@@ -11,6 +11,7 @@ class product(models.Model):
     #     self.qty = qty
     #     self.exp_date = exp_date
 
+    #TODO: setting primary key, validations file
     sku_id = models.IntegerField()
     name = models.CharField(max_length=200)
     mrp = models.DecimalField(max_digits=8, decimal_places=2)
